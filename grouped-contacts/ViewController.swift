@@ -12,13 +12,31 @@ class ViewController: UITableViewController {
     
     let cellId = "cellId"
     
+    func someMethod(cell:UITableViewCell) {
+
+        guard let indexPathTapped = tableView.indexPath(for: cell) else {return}
+        
+        let contact = twoDimensionalArray[indexPathTapped.section].names[indexPathTapped.row]
+        
+        let hasFavorited = contact.hasFavorited
+        
+        twoDimensionalArray[indexPathTapped.section].names[indexPathTapped.row].hasFavorited = !hasFavorited
+        
+        tableView.reloadRows(at: [indexPathTapped], with: .fade)
+        
+        print(contact)
+
+    }
+    
     var twoDimensionalArray = [
-        ExpandableNames(isExpanded: true, names: ["Amy","Bill","Zack","Diego","Carlos","Jack","Steve","Mary","Cleveland"]),
-        ExpandableNames(isExpanded: true, names: ["Amy","Bill","Zack","Diego","Carlos","Jack","Steve","Mary","Cleveland"]),
-        ExpandableNames(isExpanded: true, names: ["Juan","Jose","Julio","Marcos"])
+        ExpandableNames(isExpanded: true, names: ["Amy","Bill","Zack","Diego","Carlos","Jack","Steve","Mary","Cleveland"].map({Contact(name: $0, hasFavorited: false)})),
+        
+        ExpandableNames(isExpanded: true, names: ["Amy","Bill","Zack","Diego","Carlos","Jack","Steve","Mary","Cleveland"].map({Contact(name: $0, hasFavorited: false)})),
+        
+        ExpandableNames(isExpanded: true, names: [Contact(name: "Diego", hasFavorited: false)])
     ]
     
-    var showIndexPaths = false
+//    var showIndexPaths = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +44,7 @@ class ViewController: UITableViewController {
         navigationItem.title = "Contacts"
 //        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Show Indexpath", style: .plain, target: self, action: #selector(handleShowIndexPath))
         navigationController?.navigationBar.prefersLargeTitles = true
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(ContactCell.self, forCellReuseIdentifier: cellId)
     }
     
 //    @objc fileprivate func handleShowIndexPath(){
@@ -101,15 +119,19 @@ class ViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-
-        let name = twoDimensionalArray[indexPath.section].names[indexPath.row]
         
-        if showIndexPaths{
-            cell.textLabel?.text = "\(name) Section:\(indexPath.section) Row:\(indexPath.row)"
-        } else {
-            cell.textLabel?.text = name
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ContactCell
+        cell.link = self
+
+        let contact = twoDimensionalArray[indexPath.section].names[indexPath.row]
+        
+        cell.accessoryView?.tintColor = contact.hasFavorited ? UIColor.red : .lightGray
+        
+//        if showIndexPaths{
+//            cell.textLabel?.text = "\(contact.name) Section:\(indexPath.section) Row:\(indexPath.row)"
+//        } else {
+        cell.textLabel?.text = contact.name
+//        }
         
         return cell
     }

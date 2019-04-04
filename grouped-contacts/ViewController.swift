@@ -12,47 +12,81 @@ class ViewController: UITableViewController {
     
     let cellId = "cellId"
     
-    let twoDimensionalArray = [
-        ["Amy","Bill","Zack","Diego","Carlos","Jack","Steve","Mary","Cleveland"],
-        ["Juan","Jose","Julio","Marcos"],
-        ["David","Dan"]
+    var twoDimensionalArray = [
+        ExpandableNames(isExpanded: true, names: ["Amy","Bill","Zack","Diego","Carlos","Jack","Steve","Mary","Cleveland"]),
+        ExpandableNames(isExpanded: true, names: ["Amy","Bill","Zack","Diego","Carlos","Jack","Steve","Mary","Cleveland"]),
+        ExpandableNames(isExpanded: true, names: ["Juan","Jose","Julio","Marcos"])
     ]
     
     var showIndexPaths = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
         navigationItem.title = "Contacts"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Show Indexpath", style: .plain, target: self, action: #selector(handleShowIndexPath))
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Show Indexpath", style: .plain, target: self, action: #selector(handleShowIndexPath))
         navigationController?.navigationBar.prefersLargeTitles = true
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
     }
     
-    @objc fileprivate func handleShowIndexPath(){
-        var indexPathsToReload = [IndexPath]()
-
-        for section in twoDimensionalArray.indices {
-            for row in twoDimensionalArray[section].indices{
-                let indexPath = IndexPath(row: row, section: section)
-                indexPathsToReload.append(indexPath)
-            }
-        }
-        
-        showIndexPaths = !showIndexPaths
-        let animations = showIndexPaths ? UITableView.RowAnimation.right : .left
-        tableView.reloadRows(at: indexPathsToReload, with: animations)
-    }
+//    @objc fileprivate func handleShowIndexPath(){
+    
+//        var indexPathsToReload = [IndexPath]()
+//
+//        for section in twoDimensionalArray.indices {
+//            for row in twoDimensionalArray[section].names.indices{
+//                let indexPath = IndexPath(row: row, section: section)
+//                indexPathsToReload.append(indexPath)
+//            }
+//        }
+//
+//        showIndexPaths = !showIndexPaths
+//        let animations = showIndexPaths ? UITableView.RowAnimation.right : .left
+//        tableView.reloadRows(at: indexPathsToReload, with: animations)
+//
+//    }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return twoDimensionalArray.count
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let label = UILabel()
-        label.text = "Header"
-        label.backgroundColor = .lightGray
-        return label
+
+        let button = UIButton(type: .system)
+        button.setTitle("Close", for: .normal)
+        button.backgroundColor = .yellow
+        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.addTarget(self, action: #selector(handleOpenClose), for: .touchUpInside)
+        
+        button.tag = section
+        
+        return button
+    }
+    
+    @objc fileprivate func handleOpenClose(button:UIButton){
+
+        let section = button.tag
+        
+        var indexPaths = [IndexPath]()
+        
+        for row in twoDimensionalArray[section].names.indices {
+            let indexPath = IndexPath(row: row, section: section)
+            indexPaths.append(indexPath)
+        }
+        
+        let isExpanded = twoDimensionalArray[section].isExpanded
+        twoDimensionalArray[section].isExpanded = !isExpanded
+        
+        button.setTitle(isExpanded ? "Open":"Close", for: .normal)
+        
+        if !isExpanded{
+            tableView.insertRows(at: indexPaths, with: .fade)
+        }else {
+            tableView.deleteRows(at: indexPaths, with: .fade)
+        }
+        
+        
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -60,13 +94,16 @@ class ViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return twoDimensionalArray[section].count
+        if !twoDimensionalArray[section].isExpanded{
+            return 0
+        }
+        return twoDimensionalArray[section].names.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
 
-        let name = twoDimensionalArray[indexPath.section][indexPath.row]
+        let name = twoDimensionalArray[indexPath.section].names[indexPath.row]
         
         if showIndexPaths{
             cell.textLabel?.text = "\(name) Section:\(indexPath.section) Row:\(indexPath.row)"

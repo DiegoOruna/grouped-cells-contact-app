@@ -17,13 +17,31 @@ class ViewController: UITableViewController {
         ["Juan","Jose","Julio","Marcos"],
         ["David","Dan"]
     ]
+    
+    var showIndexPaths = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         navigationItem.title = "Contacts"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Show Indexpath", style: .plain, target: self, action: #selector(handleShowIndexPath))
         navigationController?.navigationBar.prefersLargeTitles = true
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+    }
+    
+    @objc fileprivate func handleShowIndexPath(){
+        var indexPathsToReload = [IndexPath]()
+
+        for section in twoDimensionalArray.indices {
+            for row in twoDimensionalArray[section].indices{
+                let indexPath = IndexPath(row: row, section: section)
+                indexPathsToReload.append(indexPath)
+            }
+        }
+        
+        showIndexPaths = !showIndexPaths
+        let animations = showIndexPaths ? UITableView.RowAnimation.right : .left
+        tableView.reloadRows(at: indexPathsToReload, with: animations)
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -50,7 +68,12 @@ class ViewController: UITableViewController {
 
         let name = twoDimensionalArray[indexPath.section][indexPath.row]
         
-        cell.textLabel?.text = "\(name) Section:\(indexPath.section) Row:\(indexPath.row)"
+        if showIndexPaths{
+            cell.textLabel?.text = "\(name) Section:\(indexPath.section) Row:\(indexPath.row)"
+        } else {
+            cell.textLabel?.text = name
+        }
+        
         return cell
     }
 

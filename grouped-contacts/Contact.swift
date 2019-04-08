@@ -8,12 +8,8 @@
 
 import Foundation
 
-struct ExpandableNames {
-    var isExpanded:Bool
-    var names:[Contact]
-}
-
 struct Contact {
     var name:String
-    var hasFavorited:Bool
+    var lastName:String
 }
+

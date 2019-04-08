@@ -12,8 +12,7 @@
 		04D4A28C22558791000F900C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04D4A28A22558791000F900C /* Main.storyboard */; };
 		04D4A28E22558794000F900C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04D4A28D22558794000F900C /* Assets.xcassets */; };
 		04D4A29122558794000F900C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04D4A28F22558794000F900C /* LaunchScreen.storyboard */; };
-		04D4A2992255BB1B000F900C /* ExpandableNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D4A2982255BB1B000F900C /* ExpandableNames.swift */; };
-		04D4A29B2256ADCE000F900C /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D4A29A2256ADCE000F900C /* ContactCell.swift */; };
+		04D4A2992255BB1B000F900C /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D4A2982255BB1B000F900C /* Contact.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,8 +23,7 @@
 		04D4A28D22558794000F900C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		04D4A29022558794000F900C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		04D4A29222558794000F900C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		04D4A2982255BB1B000F900C /* ExpandableNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableNames.swift; sourceTree = "<group>"; };
-		04D4A29A2256ADCE000F900C /* ContactCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
+		04D4A2982255BB1B000F900C /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,8 +62,7 @@
 				04D4A28D22558794000F900C /* Assets.xcassets */,
 				04D4A28F22558794000F900C /* LaunchScreen.storyboard */,
 				04D4A29222558794000F900C /* Info.plist */,
-				04D4A2982255BB1B000F900C /* ExpandableNames.swift */,
-				04D4A29A2256ADCE000F900C /* ContactCell.swift */,
+				04D4A2982255BB1B000F900C /* Contact.swift */,
 			);
 			path = "grouped-contacts";
 			sourceTree = "<group>";
@@ -141,8 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04D4A29B2256ADCE000F900C /* ContactCell.swift in Sources */,
-				04D4A2992255BB1B000F900C /* ExpandableNames.swift in Sources */,
+				04D4A2992255BB1B000F900C /* Contact.swift in Sources */,
 				04D4A28922558791000F900C /* ViewController.swift in Sources */,
 				04D4A28722558791000F900C /* AppDelegate.swift in Sources */,
 			);

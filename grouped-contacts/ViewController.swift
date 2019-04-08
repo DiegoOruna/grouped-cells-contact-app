@@ -11,132 +11,124 @@ import UIKit
 class ViewController: UITableViewController {
     
     let cellId = "cellId"
-    
-    func someMethod(cell:UITableViewCell) {
-
-        guard let indexPathTapped = tableView.indexPath(for: cell) else {return}
         
-        let contact = twoDimensionalArray[indexPathTapped.section].names[indexPathTapped.row]
-        
-        let hasFavorited = contact.hasFavorited
-        
-        twoDimensionalArray[indexPathTapped.section].names[indexPathTapped.row].hasFavorited = !hasFavorited
-        
-        tableView.reloadRows(at: [indexPathTapped], with: .fade)
-        
-        print(contact)
-
-    }
-    
-    var twoDimensionalArray = [
-        ExpandableNames(isExpanded: true, names: ["Amy","Bill","Zack","Diego","Carlos","Jack","Steve","Mary","Cleveland"].map({Contact(name: $0, hasFavorited: false)})),
-        
-        ExpandableNames(isExpanded: true, names: ["Amy","Bill","Zack","Diego","Carlos","Jack","Steve","Mary","Cleveland"].map({Contact(name: $0, hasFavorited: false)})),
-        
-        ExpandableNames(isExpanded: true, names: [Contact(name: "Diego", hasFavorited: false)])
+    let contacts:[Contact] = [
+        Contact(name: "Andrés", lastName: "Cervantes"),
+        Contact(name: "Diego", lastName: "Oruna"),
+        Contact(name: "Diana", lastName: "Cabrera"),
+        Contact(name: "Denis", lastName: "Vega"),
+        Contact(name: "Christian", lastName: "Galarza"),
+        Contact(name: "Bruno", lastName: "Camacho"),
+        Contact(name: "Barcode", lastName: "Code")
     ]
+
+    var groupedContactsByKey = [[Contact]]()
     
-//    var showIndexPaths = false
+    var lastIndex:Int?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        setupStyle()
+        groupContactsByKey()
+        
+        lastIndex = groupedContactsByKey.endIndex - 1
+    }
+    
+    fileprivate func setupStyle(){
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         navigationItem.title = "Contacts"
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Show Indexpath", style: .plain, target: self, action: #selector(handleShowIndexPath))
         navigationController?.navigationBar.prefersLargeTitles = true
-        tableView.register(ContactCell.self, forCellReuseIdentifier: cellId)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(handleAddContact))
     }
     
-//    @objc fileprivate func handleShowIndexPath(){
-    
-//        var indexPathsToReload = [IndexPath]()
-//
-//        for section in twoDimensionalArray.indices {
-//            for row in twoDimensionalArray[section].names.indices{
-//                let indexPath = IndexPath(row: row, section: section)
-//                indexPathsToReload.append(indexPath)
-//            }
-//        }
-//
-//        showIndexPaths = !showIndexPaths
-//        let animations = showIndexPaths ? UITableView.RowAnimation.right : .left
-//        tableView.reloadRows(at: indexPathsToReload, with: animations)
-//
-//    }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return twoDimensionalArray.count
+    @objc fileprivate func handleAddContact(){
+        print("Adding contact")
     }
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
-        let button = UIButton(type: .system)
-        button.setTitle("Close", for: .normal)
-        button.backgroundColor = .yellow
-        button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-        button.addTarget(self, action: #selector(handleOpenClose), for: .touchUpInside)
+    fileprivate func groupContactsByKey(){
         
-        button.tag = section
-        
-        return button
-    }
-    
-    @objc fileprivate func handleOpenClose(button:UIButton){
-
-        let section = button.tag
-        
-        var indexPaths = [IndexPath]()
-        
-        for row in twoDimensionalArray[section].names.indices {
-            let indexPath = IndexPath(row: row, section: section)
-            indexPaths.append(indexPath)
+        var groupedDictionary = Dictionary(grouping: contacts) { (contact) -> Character in
+            return contact.name.first!
         }
         
-        let isExpanded = twoDimensionalArray[section].isExpanded
-        twoDimensionalArray[section].isExpanded = !isExpanded
+        let sortedKeys = groupedDictionary.keys.sorted()
         
-        button.setTitle(isExpanded ? "Open":"Close", for: .normal)
-        
-        if !isExpanded{
-            tableView.insertRows(at: indexPaths, with: .fade)
-        }else {
-            tableView.deleteRows(at: indexPaths, with: .fade)
+        sortedKeys.forEach { (key) in
+            groupedContactsByKey.append(groupedDictionary[key]!)
         }
         
+//        groupedContactsByKey.forEach({
+//            $0.forEach({print($0.name)})
+//            print("------")
+//        })
         
     }
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell =  tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        
+        let actualContact = groupedContactsByKey[indexPath.section][indexPath.row]
+        
+        cell.textLabel?.text = "\(actualContact.name) \(actualContact.lastName)"
+        
+        return cell
+        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if !twoDimensionalArray[section].isExpanded{
-            return 0
-        }
-        return twoDimensionalArray[section].names.count
+        return groupedContactsByKey[section].count
     }
     
-//    let firstGroupedLetter:String?
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ContactCell
-        cell.link = self
-
-        let contact = twoDimensionalArray[indexPath.section].names[indexPath.row]
-        
-//        let groupedContacts = Dictionary(grouping: contact.name) {$0}.mapValues({$0.count})
-//        firstGroupedLetter = groupedContacts[key]
-        
-        cell.accessoryView?.tintColor = contact.hasFavorited ? UIColor.red : .lightGray
-        
-
-        cell.textLabel?.text = contact.name
-        
-        return cell
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return groupedContactsByKey.count
     }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
+        var firstCharacter:String?
+        
+        groupedContactsByKey[section].forEach({
+            firstCharacter = String($0.name.first!)
+        })
+        
+        return firstCharacter
+    }
+    
+    
+    
+//    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    
+//        var numberOfContacts:Int = 0
+//
+//        groupedContactsByKey.forEach({
+//            $0.forEach({ (_) in
+//                numberOfContacts = numberOfContacts + 1
+//            })
+//        })
+//
+//        if section == lastIndex {
+//            let footerLabel:UILabel = {
+//                let label = UILabel(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+//                label.text = "\(numberOfContacts) Contacts"
+//                label.textColor = .darkGray
+//                label.textAlignment = .center
+//                label.font = UIFont.boldSystemFont(ofSize: 14)
+//                return label
+//            }()
+//
+//            let customView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 70))
+//            customView.backgroundColor = UIColor.lightGray
+//
+//            customView.addSubview(footerLabel)
+//
+//            return customView
+//        }
+//
+//        return nil
 
+//    }
+    
+    
 }
 

@@ -117,6 +117,8 @@ class ViewController: UITableViewController {
         }
         return twoDimensionalArray[section].names.count
     }
+    
+//    let firstGroupedLetter:String?
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -125,13 +127,13 @@ class ViewController: UITableViewController {
 
         let contact = twoDimensionalArray[indexPath.section].names[indexPath.row]
         
+//        let groupedContacts = Dictionary(grouping: contact.name) {$0}.mapValues({$0.count})
+//        firstGroupedLetter = groupedContacts[key]
+        
         cell.accessoryView?.tintColor = contact.hasFavorited ? UIColor.red : .lightGray
         
-//        if showIndexPaths{
-//            cell.textLabel?.text = "\(contact.name) Section:\(indexPath.section) Row:\(indexPath.row)"
-//        } else {
+
         cell.textLabel?.text = contact.name
-//        }
         
         return cell
     }
